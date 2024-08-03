@@ -1,24 +1,30 @@
 package com.kafka.service;
 
-import com.kafka.constants.AppConstants;
+import com.kafka.entity.WikimediaData;
+import com.kafka.repository.WikimediaDataRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaWikimediaConsumer {
-
-    public final String topic = AppConstants.TOPIC_NAME;
-    String groupId = AppConstants.GROUP_ID;
     private final static Logger log = LoggerFactory.getLogger(KafkaWikimediaConsumer.class);
 
+    @Autowired
+    private WikimediaDataRepo wikimediaDataRepo;
+
     @KafkaListener(
-            topics = "wikimedia",
-            groupId = "wikimediaGroup"
+            topics = "${spring.kafka.topic.name}",
+            groupId = "${spring.kafka.consumer.group-id}"
     )
     public void consume(String eventMessage){
         log.info(String.format("Event message received -> %s",eventMessage));
-        log.warn(String.format("Event message received -> %s",eventMessage));
+
+        WikimediaData wikimediaData = new WikimediaData();
+        wikimediaData.setWikimediaData(eventMessage);
+
+        wikimediaDataRepo.save(wikimediaData);
     }
 }
