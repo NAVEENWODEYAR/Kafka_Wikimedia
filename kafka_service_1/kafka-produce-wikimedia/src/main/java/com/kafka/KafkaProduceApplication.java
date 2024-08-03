@@ -9,6 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class KafkaProduceApplication implements CommandLineRunner {
 
+    @Autowired
+    private WikimediaChangesProducer wikimediaChangesProducer;
+
     public static void main(String[] args) {
         SpringApplication.run(KafkaProduceApplication.class,args);
         System.out.println("produceR\n applicatioN!");
@@ -19,6 +22,4 @@ public class KafkaProduceApplication implements CommandLineRunner {
         wikimediaChangesProducer.sendMessage();
     }
 
-    @Autowired
-    private WikimediaChangesProducer wikimediaChangesProducer;
 }
